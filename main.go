@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"io/ioutil"
 	"strings"
+	// "encoding/xml"
 	htmlParser "github.com/gijs-snap/golang-htmlParser"
 )
 
@@ -14,15 +15,20 @@ func main() {
 
 	links := getLinksFromPage(html)
 
+	var uniqueLinks []string
 	for _, l := range links {
 		isForeignSite := checkLinkDomain(l.Href)
 		if isForeignSite != true {
-			fmt.Println(l.Href)
-			html := getHtml(url + l.Href)
-			fmt.Println(html)
+			_, found := Find(uniqueLinks, l.Href)
+			if !found {
+				uniqueLinks = append(uniqueLinks, l.Href)
+				html := getHtml(url + l.Href)
+				getLinksFromPage(html)
+			}			
 		}
 	}
 
+	generateXML(uniqueLinks)
 }
 
 func getHtml(url string) string{
@@ -56,4 +62,18 @@ func getLinksFromPage(html string) []htmlParser.Link {
 		panic(err)
 	}
 	return parsed
+}
+
+func generateXML(uniqueLinks []string) {
+	fmt.Println(uniqueLinks)
+
+}
+
+func Find(slice []string, val string) (int, bool) {
+    for i, item := range slice {
+        if item == val {
+            return i, true
+        }
+    }
+    return -1, false
 }
