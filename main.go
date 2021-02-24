@@ -5,17 +5,17 @@ import (
 	"net/http"
 	"io/ioutil"
 	"strings"
-	//"encoding/xml"
+	"encoding/xml"
 	htmlParser "github.com/gijs-snap/golang-htmlParser"
 )
 
-type URL struct {
-    loc    string `xml:"loc"`
+type Url struct {
+    Loc    string `xml:"loc"`
 }
 
-// type UrlArray struct {
-// 	URLList []List
-// }
+type UrlArray struct {
+	URLList []Url
+}
 
 
 func main() {
@@ -25,24 +25,30 @@ func main() {
 	links := getLinksFromPage(html)
 
 	var uniqueLinks []string
+	var allLinks []Url
+	// var urlList []UrlArray
+
 	for _, l := range links {
 		isForeignSite := checkLinkDomain(l.Href)
 		if isForeignSite != true {
 			_, found := Find(uniqueLinks, l.Href)
 			if !found {
 				// create struct instead of slice
-				// newl := URL{loc:l.Href}
+				// https://play.golang.org/p/Rbfb717tvh
 				isMailTo := strings.HasPrefix(l.Href, "mailto");
 				if isMailTo != true {
 					uniqueLinks = append(uniqueLinks, l.Href)
+					newLink := Url{Loc: l.Href}
+					allLinks = append(allLinks, newLink)
 					html := getHtml(url + l.Href)
 					getLinksFromPage(html)
 				}
+
 			}			
 		}
 	}
 
-	generateXML(uniqueLinks)
+	generateXML(allLinks)
 }
 
 func getHtml(url string) string{
@@ -78,9 +84,15 @@ func getLinksFromPage(html string) []htmlParser.Link {
 	return parsed
 }
 
-func generateXML(uniqueLinks []string) {
-	fmt.Println(uniqueLinks)
-	// xmlstring, err := xml.MarshalIndent()
+func (u *UrlArray) AddURL(href string) {
+	newu := Url{Loc:href}
+	u.URLList = append(u.URLList, newu)
+}
+
+func generateXML(allLinks []Url) {
+	fmt.Println(allLinks)
+	file, _ := xml.MarshalIndent(allLinks, "", " ") 
+	_ = ioutil.WriteFile("map.xml", file, 0644)
 }
 
 func Find(slice []string, val string) (int, bool) {
