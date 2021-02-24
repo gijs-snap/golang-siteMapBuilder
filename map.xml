@@ -1,15 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <Url>
- <loc>index.html</loc>
+    <loc>index.html</loc>
 </Url>
 <Url>
- <loc>drinks.html</loc>
+    <loc>drinks.html</loc>
 </Url>
 <Url>
- <loc>stocklist.html</loc>
+    <loc>stocklist.html</loc>
 </Url>
 <Url>
- <loc>merch.html</loc>
+    <loc>merch.html</loc>
 </Url>
 <Url>
- <loc>contact.html</loc>
+    <loc>contact.html</loc>
 </Url>
+</urlset>

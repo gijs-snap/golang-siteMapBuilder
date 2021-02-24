@@ -9,12 +9,11 @@ import (
 	htmlParser "github.com/gijs-snap/golang-htmlParser"
 )
 
+var siteMapXmlStart string = `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`
+var siteMapXmlEnd string = `</urlset>`
+
 type Url struct {
     Loc    string `xml:"loc"`
-}
-
-type UrlArray struct {
-	URLList []Url
 }
 
 
@@ -26,15 +25,12 @@ func main() {
 
 	var uniqueLinks []string
 	var allLinks []Url
-	// var urlList []UrlArray
 
 	for _, l := range links {
 		isForeignSite := checkLinkDomain(l.Href)
 		if isForeignSite != true {
 			_, found := Find(uniqueLinks, l.Href)
 			if !found {
-				// create struct instead of slice
-				// https://play.golang.org/p/Rbfb717tvh
 				isMailTo := strings.HasPrefix(l.Href, "mailto");
 				if isMailTo != true {
 					uniqueLinks = append(uniqueLinks, l.Href)
@@ -47,7 +43,6 @@ func main() {
 			}			
 		}
 	}
-
 	generateXML(allLinks)
 }
 
@@ -84,15 +79,13 @@ func getLinksFromPage(html string) []htmlParser.Link {
 	return parsed
 }
 
-func (u *UrlArray) AddURL(href string) {
-	newu := Url{Loc:href}
-	u.URLList = append(u.URLList, newu)
-}
 
 func generateXML(allLinks []Url) {
 	fmt.Println(allLinks)
-	file, _ := xml.MarshalIndent(allLinks, "", " ") 
-	_ = ioutil.WriteFile("map.xml", file, 0644)
+	if xmlstring, err := xml.MarshalIndent(allLinks, "", "    "); err == nil {
+		xmlstring = []byte(xml.Header + siteMapXmlStart  + "\n" + string(xmlstring) + "\n" + siteMapXmlEnd)
+		_ = ioutil.WriteFile("map.xml", xmlstring, 0644)
+	}
 }
 
 func Find(slice []string, val string) (int, bool) {
