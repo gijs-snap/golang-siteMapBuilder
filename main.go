@@ -5,9 +5,18 @@ import (
 	"net/http"
 	"io/ioutil"
 	"strings"
-	// "encoding/xml"
+	//"encoding/xml"
 	htmlParser "github.com/gijs-snap/golang-htmlParser"
 )
+
+type URL struct {
+    loc    string `xml:"loc"`
+}
+
+// type UrlArray struct {
+// 	URLList []List
+// }
+
 
 func main() {
 	url := "https://www.seltzers.co.nz/"
@@ -21,9 +30,14 @@ func main() {
 		if isForeignSite != true {
 			_, found := Find(uniqueLinks, l.Href)
 			if !found {
-				uniqueLinks = append(uniqueLinks, l.Href)
-				html := getHtml(url + l.Href)
-				getLinksFromPage(html)
+				// create struct instead of slice
+				// newl := URL{loc:l.Href}
+				isMailTo := strings.HasPrefix(l.Href, "mailto");
+				if isMailTo != true {
+					uniqueLinks = append(uniqueLinks, l.Href)
+					html := getHtml(url + l.Href)
+					getLinksFromPage(html)
+				}
 			}			
 		}
 	}
@@ -66,7 +80,7 @@ func getLinksFromPage(html string) []htmlParser.Link {
 
 func generateXML(uniqueLinks []string) {
 	fmt.Println(uniqueLinks)
-
+	// xmlstring, err := xml.MarshalIndent()
 }
 
 func Find(slice []string, val string) (int, bool) {
