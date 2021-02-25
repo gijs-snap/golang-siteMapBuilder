@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<Url>
-    <loc>index.html</loc>
-</Url>
-<Url>
-    <loc>drinks.html</loc>
-</Url>
-<Url>
-    <loc>stocklist.html</loc>
-</Url>
-<Url>
-    <loc>merch.html</loc>
-</Url>
-<Url>
-    <loc>contact.html</loc>
-</Url>
+<url>
+    <loc>https://seltzers.co.nz/index.html</loc>
+</url>
+<url>
+    <loc>https://seltzers.co.nz/drinks.html</loc>
+</url>
+<url>
+    <loc>https://seltzers.co.nz/stocklist.html</loc>
+</url>
+<url>
+    <loc>https://seltzers.co.nz/merch.html</loc>
+</url>
+<url>
+    <loc>https://seltzers.co.nz/contact.html</loc>
+</url>
 </urlset>

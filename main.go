@@ -13,12 +13,13 @@ var siteMapXmlStart string = `<urlset xmlns="http://www.sitemaps.org/schemas/sit
 var siteMapXmlEnd string = `</urlset>`
 
 type Url struct {
+	XMLName xml.Name `xml:"url"`
     Loc    string `xml:"loc"`
 }
 
 
 func main() {
-	url := "https://www.seltzers.co.nz/"
+	url := "https://seltzers.co.nz/"
 	html := getHtml(url)
 
 	links := getLinksFromPage(html)
@@ -34,7 +35,7 @@ func main() {
 				isMailTo := strings.HasPrefix(l.Href, "mailto");
 				if isMailTo != true {
 					uniqueLinks = append(uniqueLinks, l.Href)
-					newLink := Url{Loc: l.Href}
+					newLink := Url{Loc: url + l.Href}
 					allLinks = append(allLinks, newLink)
 					html := getHtml(url + l.Href)
 					getLinksFromPage(html)
@@ -47,7 +48,7 @@ func main() {
 }
 
 func getHtml(url string) string{
-	fmt.Printf("HTML code of %s ...\n", url)
+	fmt.Printf("Parsing %s ...\n", url)
 
 	resp, err := http.Get(url)
 
@@ -81,7 +82,6 @@ func getLinksFromPage(html string) []htmlParser.Link {
 
 
 func generateXML(allLinks []Url) {
-	fmt.Println(allLinks)
 	if xmlstring, err := xml.MarshalIndent(allLinks, "", "    "); err == nil {
 		xmlstring = []byte(xml.Header + siteMapXmlStart  + "\n" + string(xmlstring) + "\n" + siteMapXmlEnd)
 		_ = ioutil.WriteFile("map.xml", xmlstring, 0644)
